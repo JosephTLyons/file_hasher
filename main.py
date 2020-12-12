@@ -28,8 +28,8 @@ def get_sha_lines(file_path_to_sha256_dictionary):
         )
     )
 
-    number_of_items_in_dictioary = len(file_path_to_sha256_dictionary)
-    index_padding_length = len(str(number_of_items_in_dictioary))
+    number_of_items_in_dictionary = len(file_path_to_sha256_dictionary)
+    index_padding_length = len(str(number_of_items_in_dictionary))
 
     sha_lines = []
 
