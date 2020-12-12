@@ -33,11 +33,11 @@ def get_sha_lines(file_path_to_sha256_dictionary):
 
     sha_lines = []
 
-    for index, (file_path, sha256) in enumerate(file_path_to_sha256_dictionary.items()):
+    for index, (file_path, sha_256) in enumerate(file_path_to_sha256_dictionary.items()):
         padded_index = str(index + 1).rjust(index_padding_length)
         padded_file_name = str(file_path).ljust(longest_path_length)
 
-        sha_line = f"{padded_index} | {padded_file_name} | {sha256}"
+        sha_line = f"{padded_index} | {padded_file_name} | {sha_256}"
         sha_lines.append(sha_line)
 
     return sha_lines
