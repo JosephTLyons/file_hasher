@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 
 from hashlib import sha256
 from pathlib import Path
@@ -42,23 +43,34 @@ def get_sha_lines(file_path_to_sha256_dictionary):
     return sha_lines
 
 
-def print_shas(file_path_to_sha256_dictionary):
-    sha_lines = get_sha_lines(file_path_to_sha256_dictionary)
-
+def print_sha_lines_to_console(sha_lines):
     for sha_line in sha_lines:
         print(sha_line)
 
 
-def save_file_shas(file_path_to_sha256_dictionary):
-    sha_lines = get_sha_lines(file_path_to_sha256_dictionary)
-
-    # Open file and print to it
+def print_sha_lines_to_file(sha_lines, directory_path):
+    with open(directory_path / "file_hashes.txt", "w") as output_file:
+        for sha_line in sha_lines:
+            output_file.write(sha_line + "\n")
 
 
 def main():
-    directory_path = Path("/Users/josephlyons/Desktop/file_hasher")
+    if len(sys.argv) != 2:
+        print("Must provide a directory path as input")
+        sys.exit()
+
+    directory_path = Path(sys.argv[1])
+
+    if not directory_path.exists():
+        print("Argument must be a directory path")
+        sys.exit()
+
     file_path_to_sha256_dictionary = get_file_path_to_sha256_dictionary(directory_path, {})
-    print_shas(file_path_to_sha256_dictionary)
+
+    sha_lines = get_sha_lines(file_path_to_sha256_dictionary)
+
+    print_sha_lines_to_console(sha_lines)
+    print_sha_lines_to_file(sha_lines, directory_path)
 
 
 if __name__ == "__main__":
@@ -66,5 +78,4 @@ if __name__ == "__main__":
 
 # Add option to only show relative file paths
 # Add option to SHA main file produced?
-# Allow user to input what directories they want to run it on, make sure it is a directory
 # Potentially swap out the custom recursion function for the directory iterator stuff in python
