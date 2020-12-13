@@ -1,18 +1,24 @@
 #!/usr/bin/env python3
 
+import json
 import sys
 
 from hashlib import sha256
 from pathlib import Path
 
 
-def get_file_path_to_sha256_dictionary(directory_path, file_path_to_sha256_dictionary):
+def get_file_path_to_sha256_dictionary(
+    directory_path, file_path_to_sha256_dictionary, should_ignore_hidden_items=True
+):
     for item in directory_path.iterdir():
+        if should_ignore_hidden_items and item.name.startswith("."):
+            continue
+
         if item.is_file():
             with open(item, "rb") as file:
                 bytes_string = file.read()
                 sha256_string = sha256(bytes_string).hexdigest()
-                file_path_to_sha256_dictionary[item] = sha256_string
+                file_path_to_sha256_dictionary[str(item)] = sha256_string
         elif item.is_dir():
             get_file_path_to_sha256_dictionary(item, file_path_to_sha256_dictionary)
 
@@ -48,10 +54,9 @@ def print_sha_lines_to_console(sha_lines):
         print(sha_line)
 
 
-def print_sha_lines_to_file(sha_lines, directory_path):
+def serialize_file_path_to_sha256_dictionary(file_path_to_sha256_dictionary, directory_path):
     with open(directory_path / "file_hashes.txt", "w") as output_file:
-        for sha_line in sha_lines:
-            output_file.write(sha_line + "\n")
+        json.dump(file_path_to_sha256_dictionary, output_file, indent=4)
 
 
 def main():
@@ -70,12 +75,11 @@ def main():
     sha_lines = get_sha_lines(file_path_to_sha256_dictionary)
 
     print_sha_lines_to_console(sha_lines)
-    print_sha_lines_to_file(sha_lines, directory_path)
+    serialize_file_path_to_sha256_dictionary(file_path_to_sha256_dictionary, directory_path)
 
 
 if __name__ == "__main__":
     main()
 
-# Add option to only show relative file paths
 # Add option to SHA main file produced?
 # Potentially swap out the custom recursion function for the directory iterator stuff in python
