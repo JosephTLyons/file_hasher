@@ -60,6 +60,18 @@ def serialize_file_path_to_sha_256_dictionary(file_path_to_sha_256_dictionary, o
         json.dump(file_path_to_sha_256_dictionary, output_file, indent=4)
 
 
+def compare(new_file_path_to_sha_256_dictionary, output_file_path):
+    with open(output_file_path, "r") as output_file:
+        old_file_path_to_sha_256_dictionary = json.load(output_file)
+
+        for new_file_path, new_sha_256 in new_file_path_to_sha_256_dictionary.items():
+            if new_file_path in old_file_path_to_sha_256_dictionary:
+                if new_sha_256 != old_file_path_to_sha_256_dictionary[new_file_path]:
+                    print(f"{new_file_path} has changed")
+            else:
+                print(f"{new_file_path} has been added")
+
+
 def main():
     if len(sys.argv) != 2:
         print("Must provide a directory path as input")
@@ -80,6 +92,7 @@ def main():
     output_file_path = directory_path / "file_hashes.txt"
 
     serialize_file_path_to_sha_256_dictionary(file_path_to_sha_256_dictionary, output_file_path)
+    # compare(file_path_to_sha_256_dictionary, output_file_path)
 
 
 if __name__ == "__main__":
